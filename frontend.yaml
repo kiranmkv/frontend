@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-nginx-config
+data:
+  default.conf: |
+    # Example NGINX config that forwards API requests to the backend
+    server {
+      listen 80;
+      server_name _;
+
+      # Serve static files from /usr/share/nginx/html
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+      }
+
+      # Forward /api/ calls to the backend API
+      location /api/ {
+        proxy_pass http://backend-api-service:8080;  # Replace with your backend Service name & port
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-nginx
+  template:
+    metadata:
+      labels:
+        app: frontend-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/conf.d
+        # Optionally, pass the backend URL via env variable if needed
+        env:
+        - name: BACKEND_API_URL
+          value: "http://backend-api-service:8080"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: frontend-nginx-config
+          items:
+          - key: default.conf
+            path: default.conf
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-nginx-service
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend-nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
