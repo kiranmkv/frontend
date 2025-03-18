@@ -47,7 +47,7 @@ spec:
         # Optionally, pass the backend URL via env variable if needed
         env:
         - name: BACKEND_API_URL
-          value: "http://backend-api-service:8080"
+          value: "http://fastapi-backend-service:8000"
       volumes:
       - name: config-volume
         configMap:
