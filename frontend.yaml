@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:latest
+        image: 864981739210.dkr.ecr.us-east-1.amazonaws.com/frontend:1
         ports:
         - containerPort: 80
         volumeMounts:
