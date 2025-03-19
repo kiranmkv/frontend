@@ -18,7 +18,7 @@ data:
 
       # Forward /api/ calls to the backend API
       location /api/ {
-        proxy_pass http://backend-api-service:8080;  # Replace with your backend Service name & port
+        proxy_pass http://fastapi-backend-service:8000;  # Replace with your backend Service name & port
       }
     }
 ---
