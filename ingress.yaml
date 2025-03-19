@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    #cert-manager.io/cluster-issuer: "letsencrypt-prod"  # If using Cert-Manager for HTTPS
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kiran-devops.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-nginx-service
+            port:
+              number: 80
+  #tls:  # Optional: Enables HTTPS with a TLS certificate
+ # - hosts:
+  #  - www.example.com
+ #   secretName: frontend-tls  # Kubernetes Secret for the SSL certificate
