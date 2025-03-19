@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: https://kiran-devops.com
+  - host: kiran-devops.com
     http:
       paths:
       - path: /
