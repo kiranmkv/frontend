@@ -4,43 +4,26 @@ metadata:
   name: frontend-nginx-config
 data:
   default.conf: |
-    # NGINX configuration with JSON logging format for better log parsing
-    worker_processes 1;
-    error_log /var/log/nginx/error.log warn;
+    server {
+      listen 80;
+      server_name electrifex.kiran-devops.com;
 
-    events {
-        worker_connections 1024;
-    }
+      # Serve static files from /usr/share/nginx/html
+      location / {
+        root /usr/share/nginx/html;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+      }
 
-    http {
-        # Define custom log format in JSON
-        log_format json_combined escape=json 
-          '{ "time": "$time_iso8601", '
-          '"remote_addr": "$remote_addr", '
-          '"request": "$request", '
-          '"status": "$status", '
-          '"body_bytes_sent": "$body_bytes_sent", '
-          '"http_referer": "$http_referer", '
-          '"http_user_agent": "$http_user_agent" }';
+      # Forward /healthz calls to the backend API
+      location /healthz {
+        proxy_pass http://fastapi-backend-service:8000;
+      }
 
-        access_log /var/log/nginx/access.log json_combined;
-
-        server {
-          listen 80;
-          server_name electrifex.kiran-devops.com;
-
-          # Serve static files from /usr/share/nginx/html
-          location / {
-            root /usr/share/nginx/html;
-            index index.html;
-            try_files $uri $uri/ /index.html;
-          }
-
-          # Forward /healthz calls to the backend API
-          location /healthz {
-            proxy_pass http://fastapi-backend-service:8000;
-          }
-        }
+      # If a custom log format 'json_combined' is defined globally,
+      # you can enable JSON logging on this server:
+      access_log /var/log/nginx/access.log json_combined;
+      error_log /var/log/nginx/error.log warn;
     }
 ---
 apiVersion: apps/v1
