@@ -20,9 +20,8 @@ data:
         proxy_pass http://fastapi-backend-service:8000;
       }
 
-      # If a custom log format 'json_combined' is defined globally,
-      # you can enable JSON logging on this server:
-      access_log /var/log/nginx/access.log json_combined;
+      # Use default log format
+      access_log /var/log/nginx/access.log;
       error_log /var/log/nginx/error.log warn;
     }
 ---
