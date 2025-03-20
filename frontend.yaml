@@ -7,7 +7,7 @@ data:
     # Example NGINX config that forwards API requests to the backend
     server {
       listen 80;
-      server_name _;
+      server_name electrifex.kiran-devops.com;
 
       # Serve static files from /usr/share/nginx/html
       location / {
@@ -16,9 +16,9 @@ data:
         try_files $uri $uri/ /index.html;
       }
 
-      # Forward /api/ calls to the backend API
-      location /api/ {
-        proxy_pass http://fastapi-backend-service:8000;  # Replace with your backend Service name & port
+      # Forward /healthz calls to the backend API
+      location /healthz {
+        proxy_pass http://fastapi-backend-service:8000;
       }
     }
 ---
@@ -44,7 +44,6 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nginx/conf.d
-        # Optionally, pass the backend URL via env variable if needed
         env:
         - name: BACKEND_API_URL
           value: "http://fastapi-backend-service:8000"
