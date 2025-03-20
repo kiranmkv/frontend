@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: electrifex.kiran-devops.com/
+  - host: electrifex.kiran-devops.com
     http:
       paths:
       - path: /
