@@ -63,12 +63,16 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
+        - name: logs
+          mountPath: /var/log/nginx
         - name: config-volume
           mountPath: /etc/nginx/conf.d
         env:
         - name: BACKEND_API_URL
           value: "http://fastapi-backend-service:8000"
       volumes:
+      - name: logs
+        emptyDir: {}
       - name: config-volume
         configMap:
           name: frontend-nginx-config
